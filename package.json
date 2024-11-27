@@ -10,7 +10,11 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@nomicfoundation/hardhat-ignition-ethers": "^0.15.8",
     "@nomicfoundation/hardhat-toolbox": "^5.0.0",
     "hardhat": "^2.22.16"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5"
   }
 }
