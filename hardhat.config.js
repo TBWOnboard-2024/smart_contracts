@@ -4,7 +4,6 @@ require("dotenv").config();
 
 const privateKey = process.env.PRIVATE_KEY;
 
-/** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
   solidity: {
     version: "0.8.28",
