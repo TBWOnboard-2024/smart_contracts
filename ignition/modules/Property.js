@@ -1,6 +1,6 @@
 const { buildModule } = require("@nomicfoundation/hardhat-ignition/modules");
 
-module.exports = buildModule("LockModule", (m) => {
+module.exports = buildModule("PropertyModule", (m) => {
 
   const propertyContract = m.contract("RWA_RealEstate_NFT");
 
