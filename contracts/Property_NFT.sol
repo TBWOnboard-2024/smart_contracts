@@ -11,12 +11,16 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Pausable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
+interface Imarketplace {
+    function createProperty (address lister, uint256 _tokenId, uint256 _price, bool _canBid) external;
+}
+
 contract RWA_RealEstate_NFT is Ownable, ERC721, ERC721Enumerable, ERC721URIStorage, ERC721Pausable, AccessControl, Initializable {
+    
+    Imarketplace marketplace;
     
     uint256 private _nextTokenId;
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
-
-    address marketplaceAddress;
 
     struct Feature {   
         uint256 propertyType; // 1= appartment, 2= house
@@ -34,7 +38,7 @@ contract RWA_RealEstate_NFT is Ownable, ERC721, ERC721Enumerable, ERC721URIStora
     event Burned(address user, uint256 tokenId);
     event BatchBurned(uint256[] tokenId);
     
-    constructor() ERC721("RealEstate RWA", "HOUSE")Ownable(msg.sender){}
+    constructor() ERC721("TBW24 RealEstate RWA", "PROPERTY")Ownable(msg.sender){}
 
     function initialize() initializer external {
         _transferOwnership(_msgSender());
@@ -52,20 +56,19 @@ contract RWA_RealEstate_NFT is Ownable, ERC721, ERC721Enumerable, ERC721URIStora
     }
 
     function mint(
-        address to,
+        uint256 price,
+        bool canBid,
         uint256 propertyType,
         string memory physicalAddress,
         uint256 rooms,
         uint256 bathrooms,
-        uint256 area
+        uint256 area    // Area in sqm
     ) public {
-        require(hasRole(MINTER_ROLE, msg.sender));
         uint256 tokenId = _nextTokenId++;
-        string memory uri = string.concat("https://realEstate/", Strings.toString(tokenId), ".json");
-        _safeMint(to, tokenId);
-        _setTokenURI(tokenId, uri);
+        _safeMint(msg.sender, tokenId);
+        marketplace.createProperty(msg.sender, tokenId, price, canBid);
         propertyFeature[tokenId]= Feature(propertyType, physicalAddress, rooms, bathrooms, area);
-        emit Minted(to, tokenId);
+        emit Minted(msg.sender, tokenId);
     }
 
     function burn(uint256 tokenId) public {
@@ -105,7 +108,7 @@ contract RWA_RealEstate_NFT is Ownable, ERC721, ERC721Enumerable, ERC721URIStora
     {
         require(!_blacklist[auth], "_update: Sender is blacklisted");
         require(!_blacklist[to], "_update: Recipient is blacklisted");
-        require(auth== marketplaceAddress || to==marketplaceAddress , "_update: Not allowed to transfer this NFT");
+        require(auth== address(marketplace) || to==address(marketplace) , "_update: Not allowed to transfer this NFT");
         return super._update(to, tokenId, auth);
     }
 
@@ -141,6 +144,14 @@ contract RWA_RealEstate_NFT is Ownable, ERC721, ERC721Enumerable, ERC721URIStora
     function removeFromBlacklist(address _account) external onlyOwner {
         require(_blacklist[_account], "Address is not blacklisted");
         _blacklist[_account] = false;
+    }
+
+    function getNextTokenId() external view returns(uint256) {
+        return _nextTokenId;
+    }
+
+    function setMarketplaceAddress(address _marketAddress) external onlyOwner {
+        marketplace = Imarketplace(_marketAddress);
     }
 
     function supportsInterface(bytes4 interfaceId)
