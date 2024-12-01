@@ -62,7 +62,7 @@ contract Marketplace_RealEstate is Ownable, ReentrancyGuard, Pausable, AccessCon
         periodInMonth = 60; // 5 years = 60 months
         isTax= true;
         taxReceiver = 0x2f9FcE639EfF5A9f707489431DA6F48440d246D8;
-        BUSDtoken = IERC20(0x540C721Cf21bFDAE241925B50eBbf82E944AC973);
+        BUSDtoken = IERC20(0x2ad4992E2bFa5440e9CE7C8D4A53bf7C2Eb62A93);
         percentage_downPayment = 20;
         _grantRole(LISTER_ROLE, owner());
     }
@@ -239,6 +239,7 @@ contract Marketplace_RealEstate is Ownable, ReentrancyGuard, Pausable, AccessCon
 
         emit BuyProperty(msg.sender, _tokenId, listing.price);
     }
+
 
     function makePayment(uint256 _tokenId) external whenNotPaused nonReentrant {
         MarketItem storage listing = items[_tokenId];
