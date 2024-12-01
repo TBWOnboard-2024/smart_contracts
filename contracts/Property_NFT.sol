@@ -108,7 +108,7 @@ contract Property_NFT is Ownable, ERC721, ERC721Enumerable, ERC721URIStorage, ER
     {
         require(!_blacklist[auth], "_update: Sender is blacklisted");
         require(!_blacklist[to], "_update: Recipient is blacklisted");
-        require(auth== address(marketplace) || to==address(marketplace) , "_update: Not allowed to transfer this NFT");
+        require(auth==address(marketplace) || to==address(marketplace) , "_update: Not allowed to transfer this NFT");
         return super._update(to, tokenId, auth);
     }
 
