@@ -15,7 +15,7 @@ contract tBUSD is Initializable, ERC20Upgradeable, ERC20BurnableUpgradeable, ERC
     }
 
     function initialize() initializer public {
-        __ERC20_init("MyToken", "MTK");
+        __ERC20_init("Test BUSD", "tBUSD");
         __ERC20Burnable_init();
         __ERC20Pausable_init();
         __Ownable_init(msg.sender);

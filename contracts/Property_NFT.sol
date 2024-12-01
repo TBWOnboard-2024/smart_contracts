@@ -15,9 +15,9 @@ interface Imarketplace {
     function createProperty (address lister, uint256 _tokenId, uint256 _price, bool _canBid) external;
 }
 
-contract RWA_RealEstate_NFT is Ownable, ERC721, ERC721Enumerable, ERC721URIStorage, ERC721Pausable, AccessControl, Initializable {
+contract Property_NFT is Ownable, ERC721, ERC721Enumerable, ERC721URIStorage, ERC721Pausable, AccessControl, Initializable {
     
-    Imarketplace marketplace;
+    Imarketplace public marketplace;
     
     uint256 private _nextTokenId;
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
@@ -65,7 +65,7 @@ contract RWA_RealEstate_NFT is Ownable, ERC721, ERC721Enumerable, ERC721URIStora
         uint256 area    // Area in sqm
     ) public {
         uint256 tokenId = _nextTokenId++;
-        _safeMint(msg.sender, tokenId);
+        _safeMint(address(marketplace), tokenId);
         marketplace.createProperty(msg.sender, tokenId, price, canBid);
         propertyFeature[tokenId]= Feature(propertyType, physicalAddress, rooms, bathrooms, area);
         emit Minted(msg.sender, tokenId);
