@@ -282,7 +282,7 @@ contract Marketplace_RealEstate is Ownable, ReentrancyGuard, Pausable, AccessCon
         return downPayment;
     }
 
-    function getMontlyPayment(uint256 _tokenId) external view returns (uint256) {
+    function getMonthlyPayment(uint256 _tokenId) external view returns (uint256) {
         MarketItem memory listing = items[_tokenId];
         uint256 downPayment = listing.price * percentage_downPayment/100;
         uint256 monthlyPayment = (listing.price - downPayment)/periodInMonth;

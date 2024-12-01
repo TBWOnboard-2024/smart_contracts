@@ -591,6 +591,19 @@
 		"type": "function"
 	},
 	{
+		"inputs": [],
+		"name": "getNextTokenId",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
 		"inputs": [
 			{
 				"internalType": "bytes32",
@@ -715,11 +728,29 @@
 		"type": "function"
 	},
 	{
+		"inputs": [],
+		"name": "marketplace",
+		"outputs": [
+			{
+				"internalType": "contract Imarketplace",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
 		"inputs": [
 			{
-				"internalType": "address",
-				"name": "to",
-				"type": "address"
+				"internalType": "uint256",
+				"name": "price",
+				"type": "uint256"
+			},
+			{
+				"internalType": "bool",
+				"name": "canBid",
+				"type": "bool"
 			},
 			{
 				"internalType": "uint256",
@@ -977,6 +1008,19 @@
 			}
 		],
 		"name": "setApprovalForAll",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_marketAddress",
+				"type": "address"
+			}
+		],
+		"name": "setMarketplace",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
