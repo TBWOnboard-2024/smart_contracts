@@ -3,23 +3,28 @@
 pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/utils/Strings.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/access/AccessControl.sol";
-import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
-import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
-import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Pausable.sol";
+import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721EnumerableUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721URIStorageUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721PausableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
 interface Imarketplace {
+    function createProperty (address lister, uint256 _tokenId, uint256 _price) external;
     function createProperty (address lister, uint256 _tokenId, uint256 _price, bool _canBid) external;
 }
 
-contract Property_NFT is Ownable, ERC721, ERC721Enumerable, ERC721URIStorage, ERC721Pausable, AccessControl, Initializable {
+contract Property_NFT is Initializable, OwnableUpgradeable, ERC721Upgradeable, 
+    ERC721EnumerableUpgradeable, ERC721URIStorageUpgradeable, 
+    ERC721PausableUpgradeable, AccessControlUpgradeable {
     
     Imarketplace public marketplace;
+    Imarketplace public fractionalMarketplace;
     
     uint256 private _nextTokenId;
+    uint256 private _nextFracTokenId;
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
 
     struct Feature {   
@@ -37,12 +42,18 @@ contract Property_NFT is Ownable, ERC721, ERC721Enumerable, ERC721URIStorage, ER
     event BatchMinted(address to, uint256[] tokenId);
     event Burned(address user, uint256 tokenId);
     event BatchBurned(uint256[] tokenId);
-    
-    constructor() ERC721("TBW24 RealEstate RWA", "PROPERTY")Ownable(msg.sender){}
+
 
     function initialize() initializer external {
-        _transferOwnership(_msgSender());
+        __Ownable_init(msg.sender);
+        __ERC721_init("TBW24 RealEstate RWA", "PROPERTY");
+        __ERC721Enumerable_init();
+        __ERC721URIStorage_init();
+        __ERC721Pausable_init();
+        __AccessControl_init();
+
         _nextTokenId = 1;
+        _nextFracTokenId = 10000001;
         _grantRole(DEFAULT_ADMIN_ROLE, owner());
         _grantRole(MINTER_ROLE, owner());
     }
@@ -55,7 +66,7 @@ contract Property_NFT is Ownable, ERC721, ERC721Enumerable, ERC721URIStorage, ER
         _unpause();
     }
 
-    function mint(
+    function createProperty(
         uint256 price,
         bool canBid,
         uint256 propertyType,
@@ -67,6 +78,21 @@ contract Property_NFT is Ownable, ERC721, ERC721Enumerable, ERC721URIStorage, ER
         uint256 tokenId = _nextTokenId++;
         _safeMint(address(marketplace), tokenId);
         marketplace.createProperty(msg.sender, tokenId, price, canBid);
+        propertyFeature[tokenId]= Feature(propertyType, physicalAddress, rooms, bathrooms, area);
+        emit Minted(msg.sender, tokenId);
+    }
+
+    function createPropertyShared(
+        uint256 price,
+        uint256 propertyType,
+        string memory physicalAddress,
+        uint256 rooms,
+        uint256 bathrooms,
+        uint256 area    // Area in sqm
+    ) public {
+        uint256 tokenId = _nextFracTokenId++;
+        _safeMint(address(fractionalMarketplace), tokenId);
+        fractionalMarketplace.createProperty(msg.sender, tokenId, price);
         propertyFeature[tokenId]= Feature(propertyType, physicalAddress, rooms, bathrooms, area);
         emit Minted(msg.sender, tokenId);
     }
@@ -103,7 +129,7 @@ contract Property_NFT is Ownable, ERC721, ERC721Enumerable, ERC721URIStorage, ER
 
     function _update(address to, uint256 tokenId, address auth)
         internal
-        override(ERC721, ERC721Enumerable, ERC721Pausable)
+        override(ERC721Upgradeable, ERC721EnumerableUpgradeable, ERC721PausableUpgradeable)
         returns (address)
     {
         require(!_blacklist[auth], "_update: Sender is blacklisted");
@@ -114,7 +140,7 @@ contract Property_NFT is Ownable, ERC721, ERC721Enumerable, ERC721URIStorage, ER
 
     function _increaseBalance(address account, uint128 value)
         internal
-        override(ERC721, ERC721Enumerable)
+        override(ERC721Upgradeable, ERC721EnumerableUpgradeable)
     {
         super._increaseBalance(account, value);
     }
@@ -122,7 +148,7 @@ contract Property_NFT is Ownable, ERC721, ERC721Enumerable, ERC721URIStorage, ER
     function tokenURI(uint256 tokenId)
         public
         view
-        override(ERC721, ERC721URIStorage)
+        override(ERC721Upgradeable, ERC721URIStorageUpgradeable)
         returns (string memory)
     {
         return super.tokenURI(tokenId);
@@ -154,10 +180,14 @@ contract Property_NFT is Ownable, ERC721, ERC721Enumerable, ERC721URIStorage, ER
         marketplace = Imarketplace(_marketAddress);
     }
 
+    function setFractionalMarketplace(address _marketAddress) external onlyOwner {
+        fractionalMarketplace = Imarketplace(_marketAddress);
+    }
+
     function supportsInterface(bytes4 interfaceId)
         public
         view
-        override(ERC721, ERC721Enumerable, ERC721URIStorage, AccessControl)
+        override(ERC721Upgradeable, ERC721EnumerableUpgradeable, ERC721URIStorageUpgradeable, AccessControlUpgradeable)
         returns (bool)
     {
         return super.supportsInterface(interfaceId);

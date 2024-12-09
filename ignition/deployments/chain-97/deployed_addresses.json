@@ -1,5 +1,4 @@
 {
-  "MarketplaceModule#Marketplace_RealEstate": "0xda855d69D6d72b3E30B293258B7c04205CB95132",
-  "tBUSDModule#tBUSD": "0x571B2B127147E1094a5f6B93Fe157d0131139DFb",
-  "PropertyModule#Property_NFT": "0x306237E8AC7C0210E16BD9b5043D0c9Dbede0b4c"
+  "Marketplace_2_Module#FractionalOwnershipMarketplace": "0x8B54d4445D5FE030919F225f6C594cfA49B74573",
+  "MarketplaceModule#Marketplace_RealEstate": "0x941B96D954a7FFE2b68b662f652fB750dfF3d3d5"
 }

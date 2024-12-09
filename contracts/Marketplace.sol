@@ -64,6 +64,7 @@ contract Marketplace_RealEstate is Ownable, ReentrancyGuard, Pausable, AccessCon
         taxReceiver = 0x2f9FcE639EfF5A9f707489431DA6F48440d246D8;
         BUSDtoken = IERC20(0x2ad4992E2bFa5440e9CE7C8D4A53bf7C2Eb62A93);
         percentage_downPayment = 20;
+        _grantRole(DEFAULT_ADMIN_ROLE, owner());
         _grantRole(LISTER_ROLE, owner());
     }
 
