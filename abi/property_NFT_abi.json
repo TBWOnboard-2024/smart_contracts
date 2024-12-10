@@ -1,11 +1,6 @@
 [
 	{
 		"inputs": [],
-		"stateMutability": "nonpayable",
-		"type": "constructor"
-	},
-	{
-		"inputs": [],
 		"name": "AccessControlBadConfirmation",
 		"type": "error"
 	},
@@ -575,6 +570,100 @@
 		"inputs": [
 			{
 				"internalType": "uint256",
+				"name": "price",
+				"type": "uint256"
+			},
+			{
+				"internalType": "bool",
+				"name": "canBid",
+				"type": "bool"
+			},
+			{
+				"internalType": "uint256",
+				"name": "propertyType",
+				"type": "uint256"
+			},
+			{
+				"internalType": "string",
+				"name": "physicalAddress",
+				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "rooms",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "bathrooms",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "area",
+				"type": "uint256"
+			}
+		],
+		"name": "createProperty",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "price",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "propertyType",
+				"type": "uint256"
+			},
+			{
+				"internalType": "string",
+				"name": "physicalAddress",
+				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "rooms",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "bathrooms",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "area",
+				"type": "uint256"
+			}
+		],
+		"name": "createPropertyShared",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "fractionalMarketplace",
+		"outputs": [
+			{
+				"internalType": "contract Imarketplace",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
 				"name": "tokenId",
 				"type": "uint256"
 			}
@@ -738,49 +827,6 @@
 			}
 		],
 		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "price",
-				"type": "uint256"
-			},
-			{
-				"internalType": "bool",
-				"name": "canBid",
-				"type": "bool"
-			},
-			{
-				"internalType": "uint256",
-				"name": "propertyType",
-				"type": "uint256"
-			},
-			{
-				"internalType": "string",
-				"name": "physicalAddress",
-				"type": "string"
-			},
-			{
-				"internalType": "uint256",
-				"name": "rooms",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "bathrooms",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "area",
-				"type": "uint256"
-			}
-		],
-		"name": "mint",
-		"outputs": [],
-		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
@@ -1008,6 +1054,19 @@
 			}
 		],
 		"name": "setApprovalForAll",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_marketAddress",
+				"type": "address"
+			}
+		],
+		"name": "setFractionalMarketplace",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"

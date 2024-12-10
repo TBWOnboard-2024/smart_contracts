@@ -102,6 +102,21 @@ contract FractionalOwnershipMarketplace is Ownable, Pausable, AccessControl, IER
         emit PropertyBought(_tokenID, msg.sender, _shares);
     }
 
+     // Get property market informations
+    function getMarketItem(uint256 _tokenId) external view returns(MarketItem memory) {
+        MarketItem memory listing = items[_tokenId];
+        return listing;
+    }
+
+    // Batch get property market informations
+    function getBatchMarketItem(uint256[] memory _tokenId) external view returns(MarketItem[] memory) {
+        MarketItem[] memory listing = new MarketItem[](_tokenId.length);
+        for (uint256 i=0;  i<_tokenId.length ; i++) {
+            listing[i] = items[_tokenId[i]];
+        }
+        return listing;
+    }
+
     function withdrawNFT(address to, uint256 _tokenId) external onlyOwner {
         propertyNFT.transferFrom(address(this), to, _tokenId);
     }
