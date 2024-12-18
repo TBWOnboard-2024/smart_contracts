@@ -96,7 +96,7 @@ contract FractionalOwnershipMarketplace is Ownable, Pausable, AccessControl, IER
         );
 
         // Transfer shares to the buyer
-        RealtyHub_Token(listing.propertyToken).transfer(msg.sender, _shares);
+        RealtyHub_Token(listing.propertyToken).transfer(msg.sender, _shares*10**18);
         listing.sharesAvailable -= _shares;
 
         emit PropertyBought(_tokenID, msg.sender, _shares);
